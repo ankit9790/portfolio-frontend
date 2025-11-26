@@ -8,6 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { fetchCertifications } from "../utils/util";
 
 const Achievements = () => {
   const [certs, setCerts] = useState([]);
@@ -15,19 +16,10 @@ const Achievements = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchCerts = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/certifications");
-        const data = await res.json();
-        setCerts(data);
-      } catch (err) {
-        setError("Failed to load certifications");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCerts();
+    fetchCertifications()
+      .then(setCerts)
+      .catch(() => setError("Failed to load certifications"))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading)
@@ -59,11 +51,7 @@ const Achievements = () => {
           variant="h4"
           textAlign="center"
           gutterBottom
-          sx={{
-            fontWeight: "bold",
-            fontSize: { xs: "2rem", sm: "2.5rem", md: "2.5rem" },
-            mb: 6,
-          }}
+          sx={{ fontWeight: "bold", fontSize: "2.5rem", mb: 6 }}
         >
           Certifications & Achievements
         </Typography>
@@ -87,55 +75,41 @@ const Achievements = () => {
                   borderRadius: 4,
                   transition: "0.3s",
                   p: 2,
-                  "&:hover": {
-                    transform: "translateY(-5px)",
-                    boxShadow: 6,
-                  },
+                  "&:hover": { transform: "translateY(-5px)", boxShadow: 6 },
                 }}
               >
                 <CardContent>
-                  {/* Title */}
                   <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
                     {c.name}
                   </Typography>
 
-                  {/* Issuer */}
                   <Typography sx={{ mb: 2, color: "#cfd8dc" }}>
                     <strong>Issuer:</strong> {c.issuer}
                   </Typography>
 
-                  {/* Issue Date */}
                   {c.issueDate &&
                     (() => {
                       const d = new Date(c.issueDate);
-                      const formattedDate =
-                        ("0" + d.getDate()).slice(-2) +
+                      const formatted =
+                        String(d.getDate()).padStart(2, "0") +
                         "/" +
-                        ("0" + (d.getMonth() + 1)).slice(-2) +
+                        String(d.getMonth() + 1).padStart(2, "0") +
                         "/" +
                         d.getFullYear();
-
                       return (
                         <Typography sx={{ mb: 2, color: "#cfd8dc" }}>
-                          <strong>Issued On:</strong> {formattedDate}
+                          <strong>Issued On:</strong> {formatted}
                         </Typography>
                       );
                     })()}
 
-                    
-                  {/* Credential URL */}
                   {c.credentialUrl && (
                     <Button
                       variant="contained"
                       fullWidth
                       href={c.credentialUrl}
                       target="_blank"
-                      sx={{
-                        mt: 1,
-                        background: "#90caf9",
-                        color: "#000",
-                        fontWeight: "bold",
-                      }}
+                      sx={{ mt: 1, background: "#90caf9", color: "#000" }}
                     >
                       View Certificate
                     </Button>

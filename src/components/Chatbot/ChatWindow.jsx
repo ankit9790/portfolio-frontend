@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./chatbot.css";
+import { askAI } from "../../utils/util"; // FIXED PATH
 
 const ChatWindow = ({ open, onClose }) => {
   const [messages, setMessages] = useState([
@@ -10,6 +11,15 @@ const ChatWindow = ({ open, onClose }) => {
   ]);
 
   const [input, setInput] = useState("");
+  const chatEndRef = React.useRef(null);
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -17,18 +27,8 @@ const ChatWindow = ({ open, onClose }) => {
     const userMsg = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMsg]);
 
-    // Call backend API or OpenAI directly
     try {
-      const res = await fetch("http://localhost:5000/api/ask-ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: input,
-          sessionId: localStorage.getItem("chat-session"),
-        }),
-      });
-
-      const data = await res.json();
+      const data = await askAI(input);
 
       const botMsg = { sender: "bot", text: data.reply };
       setMessages((prev) => [...prev, botMsg]);
@@ -58,6 +58,8 @@ const ChatWindow = ({ open, onClose }) => {
             {msg.text}
           </div>
         ))}
+
+        <div ref={chatEndRef} />
       </div>
 
       <div className="chat-footer">

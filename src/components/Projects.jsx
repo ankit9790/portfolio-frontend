@@ -11,20 +11,18 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useEffect, useState } from "react";
+import { fetchProjects } from "../utils/util";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [expanded, setExpanded] = useState({});
 
-  // 🔥 Toggle longDescription
   const toggleExpand = (id) => {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/projects")
-      .then((res) => res.json())
-      .then((data) => setProjects(data));
+    fetchProjects().then(setProjects).catch(console.error);
   }, []);
 
   return (
@@ -41,12 +39,7 @@ const Projects = () => {
           variant="h4"
           textAlign="center"
           gutterBottom
-          sx={{
-            fontWeight: "bold",
-            fontSize: { xs: "2rem", sm: "2.5rem", md: "2.5rem" },
-            mb: 6,
-            color: "black",
-          }}
+          sx={{ fontWeight: "bold", fontSize: "2.5rem", mb: 6, color: "black" }}
         >
           Projects
         </Typography>
@@ -66,36 +59,26 @@ const Projects = () => {
                   width: "100%",
                   maxWidth: 450,
                   bgcolor: "rgba(255,255,255,0.15)",
-                  backdropFilter: "blur(6px)",
                   borderRadius: 4,
                   p: 2,
                   transition: "0.3s",
-                  "&:hover": {
-                    transform: "translateY(-5px)",
-                    boxShadow: 6,
-                  },
+                  "&:hover": { transform: "translateY(-5px)", boxShadow: 6 },
                 }}
               >
                 <CardContent>
-                  {/* Title */}
-                  <Typography
-                    variant="h6"
-                    sx={{ fontWeight: "bold", color: "black", mb: 1 }}
-                  >
+                  <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
                     {p.title}
                   </Typography>
 
-                  {/* Short Description (always fully visible) */}
                   {p.shortDescription && (
-                    <Typography sx={{ mb: 1.5, color: "black" }}>
+                    <Typography sx={{ mb: 1.5 }}>
                       {p.shortDescription}
                     </Typography>
                   )}
 
-                  {/* Long Description with SEE MORE */}
                   {p.longDescription && (
                     <Box sx={{ mb: 2 }}>
-                      <Typography sx={{ mb: 1, color: "black" }}>
+                      <Typography sx={{ mb: 1 }}>
                         {expanded[p._id]
                           ? p.longDescription
                           : `${p.longDescription.substring(0, 120)}...`}
@@ -115,11 +98,10 @@ const Projects = () => {
                         ) : (
                           <ExpandMoreIcon />
                         )}
-                     </IconButton>
+                      </IconButton>
                     </Box>
                   )}
 
-                  {/* Tech Stack */}
                   {p.techStack && (
                     <Box
                       sx={{
@@ -130,17 +112,17 @@ const Projects = () => {
                         mb: 2,
                       }}
                     >
-                      {p.techStack.map((t, index) => (
+                      {p.techStack.map((t, idx) => (
                         <Box
-                          key={index}
+                          key={idx}
                           sx={{
                             px: 1.5,
                             py: 0.5,
                             borderRadius: 1,
                             bgcolor: "#ffffff",
                             color: "#1976d2",
-                            fontWeight: "bold",
                             fontSize: "0.75rem",
+                            fontWeight: "bold",
                           }}
                         >
                           {t}
@@ -149,37 +131,25 @@ const Projects = () => {
                     </Box>
                   )}
 
-                  {/* Repo Button */}
                   {p.repoUrl && (
                     <Button
                       variant="contained"
                       fullWidth
                       href={p.repoUrl}
                       target="_blank"
-                      sx={{
-                        mt: 1,
-                        background: "#90caf9",
-                        color: "#000",
-                        // fontWeight: "bold",
-                      }}
+                      sx={{ mt: 1, background: "#90caf9", color: "#000" }}
                     >
                       View Repository
                     </Button>
                   )}
 
-                  {/* Live URL */}
                   {p.liveUrl && (
                     <Button
                       variant="outlined"
                       fullWidth
                       href={p.liveUrl}
                       target="_blank"
-                      sx={{
-                        mt: 1,
-                        background: "#90caf9",
-                        color: "#000",
-                        // fontWeight: "bold",
-                      }}
+                      sx={{ mt: 1, background: "#90caf9", color: "#000" }}
                     >
                       Live Demo
                     </Button>

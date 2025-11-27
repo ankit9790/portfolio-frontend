@@ -2,6 +2,8 @@
 
 const API_BASE_URL = "https://portfolio-backend-1-k7rj.onrender.com";
 
+// const API_BASE_URL = "http://localhost:5000";
+
 // ----- helper: create a session id -----
 function createSessionId() {
   const existing = localStorage.getItem("chat-session");

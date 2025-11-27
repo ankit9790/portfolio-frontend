@@ -2,6 +2,8 @@
 
 const API_BASE_URL = "https://portfolio-backend-1-k7rj.onrender.com";
 
+// const API_BASE_URL = "https://localhost:500";
+
 // ----- Projects -----
 export async function fetchProjects() {
   const res = await fetch(`${API_BASE_URL}/api/projects`);

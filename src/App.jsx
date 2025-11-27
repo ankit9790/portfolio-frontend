@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import useLenis from "./utils/useLenis"; // buttery scroll ❤️
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -14,6 +15,8 @@ import ChatBubble from "./components/Chatbot/ChatBubble";
 import ChatWindow from "./components/Chatbot/ChatWindow";
 
 export default function App() {
+  useLenis(); // initialize smooth scrolling 🚀
+
   const [darkMode, setDarkMode] = useState(true);
   const [openChat, setOpenChat] = useState(false);
 
@@ -30,7 +33,10 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <Navbar />
+      {/* Pass dark mode control to Navbar */}
+      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+
+      {/* Sections */}
       <Hero />
       <About />
       <Skills />
@@ -39,6 +45,7 @@ export default function App() {
       <HireMe />
       <Contact />
 
+      {/* AI Chatbot */}
       <ChatBubble onClick={() => setOpenChat(true)} />
       <ChatWindow open={openChat} onClose={() => setOpenChat(false)} />
     </ThemeProvider>
